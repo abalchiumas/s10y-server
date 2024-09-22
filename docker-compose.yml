@@ -15,12 +15,8 @@ services:
     volumes:
       - satisfactory-save-location:/satisfactory/saves
       - satisfactory-logs-location:/var/log/satisfactory
-    deploy:
-      resources:
-        limits:
-          memory: ${MEMORY_LIMIT}
-        reservations:
-          memory: ${MEMORY_RESERVATION}
+    mem_limit: ${MEMORY_LIMIT}
+    mem_reservation: ${MEMORY_RESERVATION}
     restart: unless-stopped
 
 volumes:

@@ -14,12 +14,14 @@ MAX_PLAYERS=8
 MEMORY_LIMIT=16g
 MEMORY_RESERVATION=4g
 SAVE_LOCATION=/home/user/satisfactory-saves
+LOGS_LOCATION=/home/user/satisfactory-logs
 ```
 
 Notes:
 - Make sure the necessary ports (7777/udp, 15000/udp, 15777/udp) are open and accessible for players to connect;
 - The email is used for Certbot to automatically obtain and renew SSL certificates from Let’s Encrypt;
-- The save files are stored persistently at the location specified in the ```SAVE_LOCATION``` variable.
+- The save files are stored persistently at the location specified in the ```SAVE_LOCATION``` variable;
+- The log files are stored persistently at the location specified in the ```LOGS_LOCATION``` variable.
 
 ### Opening ports on Linux
 

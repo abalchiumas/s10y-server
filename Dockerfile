@@ -18,6 +18,8 @@ EXPOSE 443
 
 ENV MAX_PLAYERS=4
 
+RUN mkdir -p /var/log/satisfactory && chmod -R 755 /var/log/satisfactory
+
 COPY start.sh /start.sh
 
 RUN chmod +x /start.sh

@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  satisfactory-server:
+    image: abalchiumas/s10y-server:latest
+    container_name: satisfactory-server
+    environment:
+      - SERVER_URL=${SERVER_URL}
+      - EMAIL=${EMAIL}
+      - MAX_PLAYERS=${MAX_PLAYERS}
+    ports:
+      - "80:80"
+      - "443:443" 
+      - "7777:7777/udp"
+      - "15000:15000/udp"
+      - "15777:15777/udp"
+    volumes:
+      - satisfactory-save-location:/satisfactory/saves
+    deploy:
+      resources:
+        limits:
+          memory: ${MEMORY_LIMIT}
+        reservations:
+          memory: ${MEMORY_RESERVATION}
+    restart: unless-stopped
+
+volumes:
+  satisfactory-save-location:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${SAVE_LOCATION}

@@ -1,29 +1,41 @@
 FROM steamcmd/steamcmd:latest
 
-RUN apt-get update && apt-get install -y curl lib32gcc-s1 nginx certbot python3-certbot-nginx && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    curl \
+    lib32gcc-s1 \
+    nginx \
+    certbot \
+    python3-certbot-nginx \
+    sudo \
+ && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /satisfactory
+RUN groupadd -r satisfactory && useradd -r -g satisfactory -d /home/satisfactory -m satisfactory
 
-RUN steamcmd +force_install_dir /satisfactory +login anonymous +app_update 1690800 validate +quit
+WORKDIR /home/satisfactory
 
-EXPOSE 7777/udp
+RUN chown -R satisfactory:satisfactory /home/satisfactory
 
-EXPOSE 15000/udp
+USER satisfactory
 
-EXPOSE 15777/udp
+RUN /home/steam/steamcmd/steamcmd.sh +force_install_dir /home/satisfactory +login anonymous +app_update 1690800 validate +quit
 
-EXPOSE 80
-
-EXPOSE 443
+EXPOSE 7777/udp 15000/udp 15777/udp 80 443
 
 ENV MAX_PLAYERS=4
 
-RUN mkdir -p /var/log/satisfactory && chmod -R 755 /var/log/satisfactory
+USER root
 
-COPY start.sh /start.sh
+RUN mkdir -p /var/log/satisfactory && \
+    chown -R satisfactory:satisfactory /var/log/satisfactory
 
-RUN chmod +x /start.sh
+RUN echo 'satisfactory ALL=(ALL) NOPASSWD: /usr/sbin/service, /usr/bin/certbot' > /etc/sudoers.d/satisfactory
 
+COPY start.sh /home/satisfactory/start.sh
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
-CMD ["/start.sh"]
+RUN chmod +x /home/satisfactory/start.sh && \
+    chown satisfactory:satisfactory /home/satisfactory/start.sh
+
+USER satisfactory
+
+CMD ["/home/satisfactory/start.sh"]

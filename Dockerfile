@@ -1,6 +1,6 @@
 FROM steamcmd/steamcmd:latest
 
-RUN apt-get update && apt-get install -y curl lib32gcc1 nginx certbot python3-certbot-nginx && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y curl lib32gcc-s1 nginx certbot python3-certbot-nginx && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /satisfactory
 

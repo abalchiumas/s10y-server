@@ -7,12 +7,13 @@ FACTORYSERVER_LOG=/var/log/satisfactory/factoryserver.log
 
 mkdir -p /var/log/satisfactory
 
-envsubst '$SERVER_URL' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+sudo envsubst '$SERVER_URL' < /etc/nginx/nginx.conf.template | sudo tee /etc/nginx/nginx.conf > /dev/null
 
-service nginx start > $NGINX_LOG 2>&1
+sudo service nginx start 2>&1 | tee -a $NGINX_LOG
 
-certbot --nginx --non-interactive --agree-tos --email "$EMAIL" -d "$SERVER_URL" >> $CERTBOT_LOG 2>&1
+sudo certbot --nginx --non-interactive --agree-tos --email "$EMAIL" -d "$SERVER_URL" 2>&1 | tee -a $CERTBOT_LOG
 
-service nginx reload >> $NGINX_LOG 2>&1
+sudo service nginx reload 2>&1 | tee -a $NGINX_LOG
 
-./FactoryServer.sh -MaxPlayers=$MAX_PLAYERS >> $FACTORYSERVER_LOG 2>&1
+cd /home/satisfactory
+./FactoryServer.sh -MaxPlayers=$MAX_PLAYERS 2>&1 | tee -a $FACTORYSERVER_LOG

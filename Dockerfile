@@ -11,9 +11,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN groupadd -r satisfactory && useradd -r -g satisfactory -d /home/satisfactory -m satisfactory
 
-ENV PATH="/home/steam/steamcmd:${PATH}"
+ENV PATH="/home/steam:${PATH}"
 
-RUN chmod -R o+rx /home/steam/steamcmd
+RUN chmod o+rx /home/steam/steamcmd.sh
+
+RUN ln -s /home/steam/steamcmd.sh /usr/local/bin/steamcmd
 
 USER satisfactory
 

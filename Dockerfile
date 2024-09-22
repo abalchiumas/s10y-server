@@ -11,30 +11,28 @@ RUN apt-get update && apt-get install -y \
 
 RUN groupadd -r satisfactory && useradd -r -g satisfactory -d /home/satisfactory -m satisfactory
 
-WORKDIR /home/satisfactory
+ENV PATH="/home/steam/steamcmd:${PATH}"
 
-RUN chown -R satisfactory:satisfactory /home/satisfactory
+RUN chmod -R o+rx /home/steam/steamcmd
 
 USER satisfactory
 
-RUN /home/steam/steamcmd/steamcmd.sh +force_install_dir /home/satisfactory +login anonymous +app_update 1690800 validate +quit
+WORKDIR /home/satisfactory
 
-EXPOSE 7777/udp 15000/udp 15777/udp 80 443
-
-ENV MAX_PLAYERS=4
+RUN steamcmd +force_install_dir /home/satisfactory +login anonymous +app_update 1690800 validate +quit
 
 USER root
-
-RUN mkdir -p /var/log/satisfactory && \
-    chown -R satisfactory:satisfactory /var/log/satisfactory
-
-RUN echo 'satisfactory ALL=(ALL) NOPASSWD: /usr/sbin/service, /usr/bin/certbot' > /etc/sudoers.d/satisfactory
 
 COPY start.sh /home/satisfactory/start.sh
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
 
 RUN chmod +x /home/satisfactory/start.sh && \
     chown satisfactory:satisfactory /home/satisfactory/start.sh
+
+RUN mkdir -p /var/log/satisfactory && \
+    chown -R satisfactory:satisfactory /var/log/satisfactory
+
+RUN echo 'satisfactory ALL=(ALL) NOPASSWD: /usr/sbin/service, /usr/bin/certbot' > /etc/sudoers.d/satisfactory
 
 USER satisfactory
 
